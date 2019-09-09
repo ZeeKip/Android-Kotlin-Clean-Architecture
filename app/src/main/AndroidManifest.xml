@@ -5,6 +5,9 @@
     <!-- Instant enabled app bundle -->
     <dist:module dist:instant="true" />
 
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
