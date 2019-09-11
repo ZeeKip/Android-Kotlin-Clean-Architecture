@@ -24,6 +24,7 @@ allprojects {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://jitpack.io' }
+        maven { url "https://dl.bintray.com/microsoftazuremobile/SDK" }
         google()
         jcenter()
     }

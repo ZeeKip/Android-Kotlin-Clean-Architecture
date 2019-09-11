@@ -15,7 +15,11 @@ import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
+import android.net.Uri;
+import android.os.Bundle;
+
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
 
     /**
      * Called when message is received.
@@ -161,7 +165,34 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
 
+
+
     companion object {
-        private const val TAG = "MyFirebaseMsgService"
+        private val TAG = "FirebaseService"
+
+        val NOTIFICATION_CHANNEL_ID = "nh-demo-channel-id"
+        val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
+        val NOTIFICATION_CHANNEL_DESCRIPTION = "Notification Hubs Demo Channel"
+
+        val NOTIFICATION_ID = 1
+        private val mNotificationManager: NotificationManager? = null
+        var builder: NotificationCompat.Builder? = null
+        var ctx: Context? = null
+        fun createChannelAndHandleNotifications(context: Context) {
+            ctx = context
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+                channel.description = NOTIFICATION_CHANNEL_DESCRIPTION
+                channel.setShowBadge(true)
+
+                val notificationManager = context.getSystemService(NotificationManager::class.java)
+                notificationManager.createNotificationChannel(channel)
+            }
+        }
     }
 }
