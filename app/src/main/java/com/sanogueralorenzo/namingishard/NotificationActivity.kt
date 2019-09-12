@@ -122,60 +122,25 @@ class NotificationActivity : AppCompatActivity(), LifecycleOwner {
         // Build the image capture use case and attach button click listener
         val imageCapture = ImageCapture(imageCaptureConfig)
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-
-            //val file = File(externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
-            val file = File(externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
+            val file = File(externalMediaDirs.first(),
+                "${System.currentTimeMillis()}.jpg")
             imageCapture.takePicture(file,
                 object : ImageCapture.OnImageSavedListener {
                     override fun onError(error: ImageCapture.UseCaseError,
                                          message: String, exc: Throwable?) {
-                        Toast.makeText(baseContext, "FAILED", Toast.LENGTH_SHORT).show()
                         val msg = "Photo capture failed: $message"
-//                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                        Log.e("CameraXApp, ${file.absolutePath}: ", msg)
+                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                        Log.e("CameraXApp", msg)
                         exc?.printStackTrace()
                     }
 
                     override fun onImageSaved(file: File) {
-                        Toast.makeText(baseContext, "SAVED", Toast.LENGTH_SHORT).show()
-                        //val msg = "Photo capture succeeded: ${file.absolutePath}"
-                        //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                        //Log.d("CameraXApp", msg)
+                        val msg = "Photo capture succeeded: ${file.absolutePath}"
+                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                        Log.d("CameraXApp", msg)
                     }
                 })
         }
-
-
-
-
-
-//        findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-//            imageCapture.takePicture(File(filesDir, "picture.jpg"), object: ImageCapture.OnImageSavedListener {
-//                override fun onImageSaved(file: File) {
-//                    Toast.makeText(baseContext, "SAVED", Toast.LENGTH_SHORT).show()
-//                    Log.d("Main", "success: $file")
-//                }
-//
-//                override fun onError(useCaseError: ImageCapture.UseCaseError, message: String, cause: Throwable?) {
-//                    Toast.makeText(baseContext, "FAILED", Toast.LENGTH_SHORT).show()
-//                    Log.w("Main", "error: $useCaseError, $message", cause)
-//                }
-//
-//            })
-//            imageCapture.takePicture(object: ImageCapture.OnImageCapturedListener(){
-//                override fun onCaptureSuccess(image: ImageProxy?, rotationDegrees: Int) {
-//                    super.onCaptureSuccess(image, rotationDegrees)
-//                }
-//                override fun onError(useCaseError: ImageCapture.UseCaseError?, message: String?, cause: Throwable?) {
-//                    super.onError(useCaseError, message, cause)
-//                }
-//            })
-//        }
-
-
-
-
-
 
         // Bind use cases to lifecycle
         // If Android Studio complains about "this" being not a LifecycleOwner
