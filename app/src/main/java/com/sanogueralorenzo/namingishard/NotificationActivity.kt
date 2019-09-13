@@ -8,8 +8,11 @@ import android.os.Bundle
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.util.Size
 import android.graphics.Matrix
+import android.os.Environment
+import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.util.Log
 import android.util.Rational
 import android.view.Surface
@@ -22,7 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.io.File
-import java.util.concurrent.TimeUnit
+
 
 // This is an arbitrary number we are using to keep tab of the permission
 // request. Where an app has multiple context for requesting permission,
@@ -30,7 +33,7 @@ import java.util.concurrent.TimeUnit
 private const val REQUEST_CODE_PERMISSIONS = 10
 
 // This is an array of all the permission specified in the manifest
-private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
 class NotificationActivity : AppCompatActivity(), LifecycleOwner {
 
@@ -120,33 +123,37 @@ class NotificationActivity : AppCompatActivity(), LifecycleOwner {
             }.build()
 
         // Build the image capture use case and attach button click listener
+
         val imageCapture = ImageCapture(imageCaptureConfig)
+        val directory = Environment.getExternalStoragePublicDirectory("/testlocation");
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-            val file = File(externalMediaDirs.first(),
+            //val file = File(externalMediaDirs.first(),
+            val file = File(directory,
                 "${System.currentTimeMillis()}.jpg")
             imageCapture.takePicture(file,
                 object : ImageCapture.OnImageSavedListener {
                     override fun onError(error: ImageCapture.UseCaseError,
                                          message: String, exc: Throwable?) {
                         val msg = "Photo capture failed: $message"
-                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(baseContext, "${msg} === DIRECTORY: ${directory}", Toast.LENGTH_LONG).show()
                         Log.e("CameraXApp", msg)
                         exc?.printStackTrace()
                     }
 
                     override fun onImageSaved(file: File) {
                         val msg = "Photo capture succeeded: ${file.absolutePath}"
-                        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(baseContext, msg, Toast.LENGTH_LONG).show()
                         Log.d("CameraXApp", msg)
                     }
-                })
+                }
+            )
         }
 
         // Bind use cases to lifecycle
         // If Android Studio complains about "this" being not a LifecycleOwner
         // try rebuilding the project or updating the appcompat dependency to
         // version 1.1.0 or higher.
-        CameraX.bindToLifecycle(this, preview)
+        CameraX.bindToLifecycle(this, preview, imageCapture)
     }
 
     private fun updateTransform() {
